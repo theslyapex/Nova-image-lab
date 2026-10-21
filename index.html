@@ -97,6 +97,20 @@ body:after{content:"";position:fixed;z-index:-2;inset:-25%;pointer-events:none;b
 @keyframes poweredSweep{0%,55%{left:-45%;opacity:0}65%{opacity:1}90%,100%{left:130%;opacity:0}}
 @media(max-width:650px){.footer .powered-link{align-self:flex-start;font-size:10px;letter-spacing:1.3px;padding:9px 13px}}
 @media(prefers-reduced-motion:reduce){.footer .powered-link:before{animation:none}}
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+input,
+textarea,
+[contenteditable="true"] {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
 </style>
 </head>
 <body>
@@ -254,6 +268,46 @@ body:after{content:"";position:fixed;z-index:-2;inset:-25%;pointer-events:none;b
  $('#reset').addEventListener('click',()=>{input.value='';currentFile=null;image=null;$('#preview').classList.remove('show');$('#fileInfo').classList.remove('show');$('#download').style.display='none';$('#width').value='';$('#height').value='';$('#cropX').value=0;$('#cropY').value=0;$('#quality').value=82;updateQualityUI();status.textContent='هنوز تصویری انتخاب نشده است.';if(outputUrl){URL.revokeObjectURL(outputUrl);outputUrl=null}updateFields()});
  updateFields();
 })();
+// غیرفعال کردن منوی کلیک راست
+document.addEventListener('contextmenu', function (event) {
+    event.preventDefault();
+});
+
+// جلوگیری از انتخاب متن با ماوس
+document.addEventListener('selectstart', function (event) {
+    if (!event.target.closest('input, textarea, [contenteditable="true"]')) {
+        event.preventDefault();
+    }
+});
+
+// جلوگیری از میان‌برهای رایج کپی و مشاهده سورس
+document.addEventListener('keydown', function (event) {
+    const key = event.key.toLowerCase();
+
+    if (
+        (event.ctrlKey || event.metaKey) &&
+        ['c', 'x', 'u', 's', 'p'].includes(key)
+    ) {
+        event.preventDefault();
+    }
+
+    if (
+        event.key === 'F12' ||
+        (event.ctrlKey && event.shiftKey &&
+         ['i', 'j', 'c'].includes(key))
+    ) {
+        event.preventDefault();
+    }
+});
+
+// جلوگیری از کپی از طریق رویداد مرورگر
+document.addEventListener('copy', function (event) {
+    event.preventDefault();
+});
+
+document.addEventListener('cut', function (event) {
+    event.preventDefault();
+});
 </script>
 </body>
 </html>
